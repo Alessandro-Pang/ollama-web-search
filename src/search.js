@@ -2,8 +2,8 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 09:37:59
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-11 10:27:05
- * @Description: 
+ * @LastEditTime: 2025-02-11 16:55:32
+ * @Description:  Google 自定义搜索 API 封装
  * @FilePath: /ollama-web-search/src/search.js
  */
 import axios from 'axios';
@@ -12,7 +12,7 @@ import axios from 'axios';
  * Google 搜索 API 参数对象
  * 参考文档：https://developers.google.com/custom-search/docs/json_api_reference
  */
-const googleSearchParams = {
+const DEFAULT_PARAMS = {
   // 启用或停用简体中文和繁体中文搜索
   // 1：已停用，0：已启用（默认）
   c2coff: '0',
@@ -115,28 +115,44 @@ const googleSearchParams = {
 
 
 /**
- * 使用Google自定义搜索API进行搜索
+ * 使用 Google 自定义搜索 API 进行搜索
  *
  * @param {string} query 搜索关键词
- * @param {googleSearchParams} params 自定义搜索参数
- * @returns 返回搜索结果的数据
+ * @param {DEFAULT_PARAMS} [params] 自定义搜索参数
+ * @returns {Promise<Object|null>} 返回搜索结果的数据，失败返回 null
  */
 async function searchGoogle(query, params) {
   const { GOOGLE_SEARCH_ID, GOOGLE_SEARCH_KEY } = process.env;
+
+  if (!GOOGLE_SEARCH_ID || !GOOGLE_SEARCH_KEY) {
+    console.error("searchGoogle: 缺少 Google 搜索 API 相关的环境变量");
+    return null;
+  }
+
+  if (!query || typeof query !== 'string') {
+    console.error("searchGoogle: 无效的搜索关键词");
+    return null;
+  }
+
   try {
     const response = await axios.get('https://www.googleapis.com/customsearch/v1', {
       params: {
         cx: GOOGLE_SEARCH_ID,
         key: GOOGLE_SEARCH_KEY,
-        q: query,
-        ...googleSearchParams,
-        ...params
+        q: encodeURIComponent(query),
+        ...DEFAULT_PARAMS, // 应用默认参数
+        ...params, // 应用自定义参数
       },
     });
-    return response.data;
+
+    return response.data || null;
   } catch (error) {
-    console.error('搜索失败:', error.message);
-    throw error;
+    console.error("searchGoogle: 搜索请求失败", {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data
+    });
+    return null;
   }
 }
 
