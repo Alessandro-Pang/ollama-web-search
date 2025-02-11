@@ -1,0 +1,18 @@
+{
+  "name": "ollama-web-search",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "zi.yang <pcy1314@163.com> (https://github.com/Alessandro-Pang)",
+  "license": "MIT",
+  "type": "module",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "ollama": "^0.5.13"
+  }
+}
