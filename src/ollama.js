@@ -2,7 +2,7 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 10:27:42
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-11 15:59:57
+ * @LastEditTime: 2025-02-12 08:48:04
  * @Description: Ollama AI 生成响应封装
  * @FilePath: /ollama-web-search/src/ollama.js
  */
@@ -19,7 +19,7 @@ const ollama = new Ollama({ host: "http://localhost:11434" });
  * @param {Object} [params={}] 其他参数（可选）
  * @returns {Promise<string|null>} 生成的响应文本，如果失败则返回 null
  */
-async function generateResponse(prompt, params = {}) {
+export async function generateResponse(prompt, params = {}) {
   if (!prompt || typeof prompt !== 'string') {
     console.error("generateResponse: 无效的 prompt 输入");
     return null;
@@ -40,4 +40,3 @@ async function generateResponse(prompt, params = {}) {
   }
 }
 
-export default generateResponse;

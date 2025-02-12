@@ -2,7 +2,7 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 09:37:59
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-11 16:55:32
+ * @LastEditTime: 2025-02-12 08:47:49
  * @Description:  Google 自定义搜索 API 封装
  * @FilePath: /ollama-web-search/src/search.js
  */
@@ -121,7 +121,7 @@ const DEFAULT_PARAMS = {
  * @param {DEFAULT_PARAMS} [params] 自定义搜索参数
  * @returns {Promise<Object|null>} 返回搜索结果的数据，失败返回 null
  */
-async function searchGoogle(query, params) {
+export async function searchGoogle(query, params) {
   const { GOOGLE_SEARCH_ID, GOOGLE_SEARCH_KEY } = process.env;
 
   if (!GOOGLE_SEARCH_ID || !GOOGLE_SEARCH_KEY) {
@@ -155,5 +155,3 @@ async function searchGoogle(query, params) {
     return null;
   }
 }
-
-export default searchGoogle;

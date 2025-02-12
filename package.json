@@ -11,6 +11,7 @@
   "type": "module",
   "description": "",
   "dependencies": {
+    "@huggingface/transformers": "^3.3.3",
     "axios": "^1.7.9",
     "cheerio": "^1.0.0",
     "chromadb": "^1.10.4",
