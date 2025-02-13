@@ -2,7 +2,7 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 09:37:59
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-12 08:47:49
+ * @LastEditTime: 2025-02-13 09:11:20
  * @Description:  Google 自定义搜索 API 封装
  * @FilePath: /ollama-web-search/src/search.js
  */
@@ -139,7 +139,7 @@ export async function searchGoogle(query, params) {
       params: {
         cx: GOOGLE_SEARCH_ID,
         key: GOOGLE_SEARCH_KEY,
-        q: encodeURIComponent(query),
+        q: query,
         ...DEFAULT_PARAMS, // 应用默认参数
         ...params, // 应用自定义参数
       },

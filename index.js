@@ -2,7 +2,7 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 09:37:51
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-12 09:19:19
+ * @LastEditTime: 2025-02-13 09:32:59
  * @Description: Google 搜索 + Ollama 生成式回答
  * @FilePath: /ollama-web-search/index.js
  */
@@ -78,7 +78,7 @@ async function main() {
     const answerPrompt = `基于以下网络搜索结果回答问题：\n${webContent}\n问题：${question} \n答案：`;
     const response = await generateResponse(answerPrompt);
 
-    console.log('回答:', response.trim());
+    console.log(`回答:\n + ${response.trim()}`);
   } catch (error) {
     console.error('发生错误:', error.message);
   }
