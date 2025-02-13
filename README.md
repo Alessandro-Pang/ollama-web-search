@@ -2,7 +2,7 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 11:54:58
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-13 09:43:29
+ * @LastEditTime: 2025-02-13 11:56:37
  * @Description: 
  * @FilePath: /ollama-web-search/README.md
 -->
@@ -25,7 +25,7 @@ ollama pull deepseek-r1:14b
 ### 安装项目依赖
 
 ```bash
-git clone https://github.com/ziyang-yang/ollama-web-search
+git clone https://github.com/Alessandro-Pang/ollama-web-search
 cd ollama-web-search
 pnpm install
 ```
