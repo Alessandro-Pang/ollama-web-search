@@ -2,12 +2,14 @@
  * @Author: zi.yang
  * @Date: 2025-02-12 08:55:01
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-14 14:26:01
+ * @LastEditTime: 2025-02-14 15:49:27
  * @Description: 抓取网页内容，提取正文并返回
  * @FilePath: /ollama-web-search/src/web-page.js
  */
 import axios from 'axios';
-import * as cheerio from 'cheerio';
+import { JSDOM } from 'jsdom';
+
+import { Readability } from '@mozilla/readability';
 
 /**
  * 抓取网页内容
@@ -31,8 +33,13 @@ export async function fetchWebContent(url) {
       timeout: 60000, // 设置超时时间，例如：10秒
       maxRedirects: 5, // 设置最大重定向次数
     });
-    const $ = cheerio.load(response.data);
-    return $('body').text().replace(/\s+/g, ' ').trim();;
+    // 使用 jsdom 创建一个 DOM 环境
+    const dom = new JSDOM(response.data);
+    const document = dom.window.document;
+
+    // 创建 Readability 实例并解析内容
+    const article = new Readability(document).parse();
+    return article?.textContent;
   } catch (error) {
     console.error(`抓取失败: ${url}`, error.message);
     return null;

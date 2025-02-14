@@ -12,11 +12,12 @@
   "description": "",
   "dependencies": {
     "@huggingface/transformers": "^3.3.3",
+    "@mozilla/readability": "^0.5.0",
     "axios": "^1.7.9",
-    "cheerio": "^1.0.0",
     "chromadb": "^1.10.4",
     "chromadb-default-embed": "^2.13.2",
     "dotenv": "^16.4.7",
+    "jsdom": "^26.0.0",
     "ollama": "^0.5.13"
   }
 }
