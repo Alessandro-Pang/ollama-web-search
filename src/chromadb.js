@@ -2,7 +2,7 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 17:19:57
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-14 17:04:20
+ * @LastEditTime: 2025-02-14 18:11:45
  * @Description: 
  * @FilePath: /ollama-web-search/src/chromadb.js
  */
@@ -93,8 +93,8 @@ export async function storeInChroma(results, collectionName = 'web_pages') {
  */
 export async function splitAndStoreInChroma(webPages, collectionName = 'web_pages') {
   const textSplitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000, // 每个分片的最大长度
-    chunkOverlap: 200, // 相邻分片的重叠长度
+    chunkSize: 1500, // 每个分片的最大长度
+    chunkOverlap: 250, // 相邻分片的重叠长度
     separators: ['。', '！', '？', '\n', ' ', ''] // 自定义分隔符
   });
 

@@ -2,7 +2,7 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 09:37:51
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-14 17:14:51
+ * @LastEditTime: 2025-02-14 17:50:14
  * @Description: Google 搜索 + Ollama 生成式回答
  * @FilePath: /ollama-web-search/index.js
  */
@@ -21,9 +21,6 @@ import { createLogger } from './src/utils.js';
 const logger = createLogger('main');
 dotenv.config({ path: ['.env.local', '.env'] });
 
-// deleteAllByCollection('web_pages')
-// const res = await getAllByCollection('web_pages');
-// fs.writeFileSync('content.json', JSON.stringify(res))
 /**
  * 获取所有页面的内容
  *
@@ -51,12 +48,14 @@ async function main() {
   console.log(`问题: ${question}`);
 
   // 生成搜索关键词
-  const questionPrompt = `请严格基于以下用户提问的核心语义，提炼出3-5个精准的Google搜索关键词。要求：
-
+  const questionPrompt = `请严格基于以下用户提问的核心语义，提炼出3-5个精准的Google搜索关键词。
+  
+要求：
 1. 关键词必须完全来自原句内容，禁止添加任何外部信息
 2. 保持原始语义的完整性，核心术语不得拆分或重组
 3. 用英文半角加号连接（例：量子计算+应用场景+技术难点）
 4. 输出仅返回关键词组合，不加任何说明
+5. 输出的关键词使用同一语言，不要中英混杂
 
 输入内容：${question}
 
@@ -80,22 +79,32 @@ async function main() {
     // 存储数据到 ChromaDB
     await splitAndStoreInChroma(results);
 
-    // 从 ChromaDB 查询相关数据，设置返回结果数量
-    const data = await queryCollectionByText([question]);
+    // 从 ChromaDB 查询相关数据
+    const data = await queryCollectionByText([search.replaceAll('+', ' ')]);
 
-    if (!data.documents?.[0] || data.documents[0].length === 0) {
+    if (!data?.documents?.[0] || data.documents[0].length === 0) {
       logger.error('未从 ChromaDB 找到相关数据');
       return;
     }
-
+    const documents = data.documents?.[0]
     // 生成回答
-    const answerPrompt = `基于以下网络搜索结果回答问题：\n${data.documents[0].join('\n')}\n问题：${question} \n答案：`;
+    const answerPrompt = `基于以下可信来源回答问题：
+${documents.join('\n')}
+
+请遵循：
+1. 使用中文回答
+2. 标注引用来源
+3. 当信息冲突时，优先采用多个来源共同支持的信息
+4. 如果信息不足请明确说明
+
+问题：${question}
+答案：`;
     const response = await generateResponse(answerPrompt);
 
     console.log(`回答:\n${response.trim()}`);
   } catch (error) {
-    logger.error('发生错误:', error.message);
+    logger.error('发生错误:', error);
   }
 }
 
-// main();
+main();

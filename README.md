@@ -2,7 +2,7 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 11:54:58
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-13 11:56:37
+ * @LastEditTime: 2025-02-14 17:58:59
  * @Description: 
  * @FilePath: /ollama-web-search/README.md
 -->
@@ -20,6 +20,22 @@ ollama + Google 搜索，实现 AI 联网回答
 
 ```bash
 ollama pull deepseek-r1:14b
+```
+
+### 安装 ChromaDB
+
+推荐使用 Docker 安装
+
+```bash
+docker pull chromadb/chroma
+docker run -p 8000:8000 chromadb/chroma
+```
+
+或者使用 Python Pip 安装
+
+```bash
+pip install chromadb
+chroma run --path /db_path
 ```
 
 ### 安装项目依赖
