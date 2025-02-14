@@ -12,12 +12,15 @@
   "description": "",
   "dependencies": {
     "@huggingface/transformers": "^3.3.3",
+    "@langchain/core": "^0.3.40",
+    "@langchain/textsplitters": "^0.1.0",
     "@mozilla/readability": "^0.5.0",
     "axios": "^1.7.9",
     "chromadb": "^1.10.4",
     "chromadb-default-embed": "^2.13.2",
     "dotenv": "^16.4.7",
     "jsdom": "^26.0.0",
-    "ollama": "^0.5.13"
+    "ollama": "^0.5.13",
+    "winston": "^3.17.0"
   }
 }

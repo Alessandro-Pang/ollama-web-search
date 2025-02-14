@@ -2,8 +2,8 @@
  * @Author: zi.yang
  * @Date: 2025-02-12 08:44:55
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-14 12:26:19
- * @Description: 
+ * @LastEditTime: 2025-02-14 16:58:25
+ * @Description: 通过大模型将内容转换为向量
  * @FilePath: /ollama-web-search/src/embedding.js
  */
 import { env, pipeline } from '@huggingface/transformers';

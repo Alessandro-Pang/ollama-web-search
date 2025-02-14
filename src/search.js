@@ -2,11 +2,15 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 09:37:59
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-13 09:11:20
+ * @LastEditTime: 2025-02-14 17:04:11
  * @Description:  Google 自定义搜索 API 封装
  * @FilePath: /ollama-web-search/src/search.js
  */
 import axios from 'axios';
+
+import { createLogger } from './utils.js';
+
+const logger = createLogger('search');
 
 /**
  * Google 搜索 API 参数对象
@@ -125,12 +129,12 @@ export async function searchGoogle(query, params) {
   const { GOOGLE_SEARCH_ID, GOOGLE_SEARCH_KEY } = process.env;
 
   if (!GOOGLE_SEARCH_ID || !GOOGLE_SEARCH_KEY) {
-    console.error("searchGoogle: 缺少 Google 搜索 API 相关的环境变量");
+    logger.error("searchGoogle: 缺少 Google 搜索 API 相关的环境变量");
     return null;
   }
 
   if (!query || typeof query !== 'string') {
-    console.error("searchGoogle: 无效的搜索关键词");
+    logger.error("searchGoogle: 无效的搜索关键词");
     return null;
   }
 
@@ -147,7 +151,7 @@ export async function searchGoogle(query, params) {
 
     return response.data || null;
   } catch (error) {
-    console.error("searchGoogle: 搜索请求失败", {
+    logger.error("searchGoogle: 搜索请求失败", {
       message: error.message,
       status: error.response?.status,
       data: error.response?.data

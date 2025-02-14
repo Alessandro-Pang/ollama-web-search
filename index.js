@@ -2,20 +2,28 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 09:37:51
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-14 14:33:34
+ * @LastEditTime: 2025-02-14 17:14:51
  * @Description: Google 搜索 + Ollama 生成式回答
  * @FilePath: /ollama-web-search/index.js
  */
 
 import dotenv from 'dotenv';
 
-import { queryCollectionByText, storeInChroma } from './src/chromadb.js';
+import {
+  queryCollectionByText,
+  splitAndStoreInChroma,
+} from './src/chromadb.js';
 import { generateResponse } from './src/ollama.js';
+import { fetchWebContent } from './src/scraping.js';
 import { searchGoogle } from './src/search.js';
-import { fetchWebContent } from './src/web-page.js';
+import { createLogger } from './src/utils.js';
 
+const logger = createLogger('main');
 dotenv.config({ path: ['.env.local', '.env'] });
 
+// deleteAllByCollection('web_pages')
+// const res = await getAllByCollection('web_pages');
+// fs.writeFileSync('content.json', JSON.stringify(res))
 /**
  * 获取所有页面的内容
  *
@@ -29,14 +37,14 @@ function getAllPageContent(items) {
       const fulfilledResults = results.filter(({ status, value }) => status === 'fulfilled' && Boolean(value));
       resolve(fulfilledResults.map(({ value }, idx) => ({ ...items[idx], content: value })));
     });
-  })
+  });
 }
 
 async function main() {
   const question = process.argv.slice(2).join(' ').trim();
 
   if (!question) {
-    console.error('错误: 请输入要搜索的问题');
+    logger.error('错误: 请输入要搜索的问题');
     process.exit(1);
   }
 
@@ -64,13 +72,21 @@ async function main() {
     // 进行 Google 搜索
     const searchResult = await searchGoogle(search);
     if (!searchResult?.items || searchResult.items.length === 0) {
-      console.error('未找到相关搜索结果');
+      logger.error('未找到相关搜索结果');
       return;
     }
     const results = await getAllPageContent(searchResult.items);
 
-    await storeInChroma(results)
-    const data = await queryCollectionByText(question)
+    // 存储数据到 ChromaDB
+    await splitAndStoreInChroma(results);
+
+    // 从 ChromaDB 查询相关数据，设置返回结果数量
+    const data = await queryCollectionByText([question]);
+
+    if (!data.documents?.[0] || data.documents[0].length === 0) {
+      logger.error('未从 ChromaDB 找到相关数据');
+      return;
+    }
 
     // 生成回答
     const answerPrompt = `基于以下网络搜索结果回答问题：\n${data.documents[0].join('\n')}\n问题：${question} \n答案：`;
@@ -78,10 +94,8 @@ async function main() {
 
     console.log(`回答:\n${response.trim()}`);
   } catch (error) {
-    console.error('发生错误:', error.message);
+    logger.error('发生错误:', error.message);
   }
 }
 
-main();
-
-// getTextEmbedding('hello world').then(console.log);
+// main();

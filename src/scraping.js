@@ -2,15 +2,18 @@
  * @Author: zi.yang
  * @Date: 2025-02-12 08:55:01
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-14 15:49:27
+ * @LastEditTime: 2025-02-14 17:04:14
  * @Description: 抓取网页内容，提取正文并返回
- * @FilePath: /ollama-web-search/src/web-page.js
+ * @FilePath: /ollama-web-search/src/scraping.js
  */
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
 
 import { Readability } from '@mozilla/readability';
 
+import { createLogger } from './utils.js';
+
+const logger = createLogger('scraping');
 /**
  * 抓取网页内容
  * @param {string} url - 目标网页 URL
@@ -41,7 +44,7 @@ export async function fetchWebContent(url) {
     const article = new Readability(document).parse();
     return article?.textContent;
   } catch (error) {
-    console.error(`抓取失败: ${url}`, error.message);
+    logger.error(`抓取失败: ${url}`, error.message);
     return null;
   }
 }

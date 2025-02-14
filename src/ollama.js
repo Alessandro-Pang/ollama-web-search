@@ -2,12 +2,16 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 10:27:42
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-13 09:42:03
+ * @LastEditTime: 2025-02-14 17:04:16
  * @Description: Ollama AI 生成响应封装
  * @FilePath: /ollama-web-search/src/ollama.js
  */
 
 import { Ollama } from 'ollama';
+
+import { createLogger } from './utils.js';
+
+const logger = createLogger('ollama');
 
 // 配置 Ollama 服务器
 const ollama = new Ollama({ host: "http://localhost:11434" });
@@ -21,7 +25,7 @@ const ollama = new Ollama({ host: "http://localhost:11434" });
  */
 export async function generateResponse(prompt, params = {}) {
   if (!prompt || typeof prompt !== 'string') {
-    console.error("generateResponse: 无效的 prompt 输入");
+    logger.error("generateResponse: 无效的 prompt 输入");
     return null;
   }
 
@@ -35,7 +39,7 @@ export async function generateResponse(prompt, params = {}) {
 
     return response?.response || null;
   } catch (error) {
-    console.error("generateResponse: 请求失败", error);
+    logger.error("generateResponse: 请求失败", error);
     return null;
   }
 }
