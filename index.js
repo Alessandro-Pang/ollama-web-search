@@ -2,13 +2,14 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 09:37:51
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-13 09:36:46
+ * @LastEditTime: 2025-02-14 14:33:34
  * @Description: Google 搜索 + Ollama 生成式回答
  * @FilePath: /ollama-web-search/index.js
  */
 
 import dotenv from 'dotenv';
 
+import { queryCollectionByText, storeInChroma } from './src/chromadb.js';
 import { generateResponse } from './src/ollama.js';
 import { searchGoogle } from './src/search.js';
 import { fetchWebContent } from './src/web-page.js';
@@ -25,7 +26,7 @@ function getAllPageContent(items) {
   const allRequest = items.map(({ link }) => fetchWebContent(link));
   return new Promise((resolve) => {
     Promise.allSettled(allRequest).then((results) => {
-      const fulfilledResults = results.filter(({ status }) => status === 'fulfilled');
+      const fulfilledResults = results.filter(({ status, value }) => status === 'fulfilled' && Boolean(value));
       resolve(fulfilledResults.map(({ value }, idx) => ({ ...items[idx], content: value })));
     });
   })
@@ -68,14 +69,11 @@ async function main() {
     }
     const results = await getAllPageContent(searchResult.items);
 
-    // 组合搜索摘要
-    const webContent = results
-      .map(({ content }) => content)
-      .filter(Boolean) // 过滤 undefined/null
-      .join('\n');
+    await storeInChroma(results)
+    const data = await queryCollectionByText(question)
 
     // 生成回答
-    const answerPrompt = `基于以下网络搜索结果回答问题：\n${webContent}\n问题：${question} \n答案：`;
+    const answerPrompt = `基于以下网络搜索结果回答问题：\n${data.documents[0].join('\n')}\n问题：${question} \n答案：`;
     const response = await generateResponse(answerPrompt);
 
     console.log(`回答:\n${response.trim()}`);
@@ -85,3 +83,5 @@ async function main() {
 }
 
 main();
+
+// getTextEmbedding('hello world').then(console.log);
