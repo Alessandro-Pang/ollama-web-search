@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "keywords": [],
   "author": "zi.yang <pcy1314@163.com> (https://github.com/Alessandro-Pang)",
@@ -11,16 +14,37 @@
   "type": "module",
   "description": "",
   "dependencies": {
+    "@ai-sdk/deepseek": "^0.1.13",
+    "@ai-sdk/openai": "^1.2.1",
+    "@ai-sdk/react": "^1.1.22",
     "@huggingface/transformers": "^3.3.3",
     "@langchain/core": "^0.3.40",
     "@langchain/textsplitters": "^0.1.0",
     "@mozilla/readability": "^0.5.0",
+    "ai": "^4.1.54",
     "axios": "^1.7.9",
     "chromadb": "^1.10.4",
     "chromadb-default-embed": "^2.13.2",
+    "cohere-ai": "^7.16.0",
     "dotenv": "^16.4.7",
     "jsdom": "^26.0.0",
-    "ollama": "^0.5.13",
-    "winston": "^3.17.0"
+    "lucide-react": "^0.479.0",
+    "next": "15.2.2",
+    "ollama-ai-provider": "^1.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "winston": "^3.17.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

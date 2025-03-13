@@ -1,8 +1,9 @@
+'use server'
 /*
  * @Author: zi.yang
  * @Date: 2025-02-11 17:19:57
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-14 18:11:45
+ * @LastEditTime: 2025-03-11 17:55:53
  * @Description: 
  * @FilePath: /ollama-web-search/src/chromadb.js
  */
@@ -100,17 +101,16 @@ export async function splitAndStoreInChroma(webPages, collectionName = 'web_page
 
   const allSlices = [];
   for (const page of webPages) {
-    const { link, title, content } = page;
+    const { url, title, content } = page;
     const slices = await textSplitter.splitText(content);
     slices.forEach((slice, index) => {
       allSlices.push({
-        link: `${link}-slice-${index}`,
+        link: `${url}-slice-${index}`,
         title: `${title}-slice-${index}`,
         content: slice
       });
     });
   }
-
   await storeInChroma(allSlices, collectionName);
 }
 

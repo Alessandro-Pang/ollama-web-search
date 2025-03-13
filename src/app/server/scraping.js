@@ -2,7 +2,7 @@
  * @Author: zi.yang
  * @Date: 2025-02-12 08:55:01
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-14 18:11:30
+ * @LastEditTime: 2025-03-11 18:08:28
  * @Description: 抓取网页内容，提取正文并返回
  * @FilePath: /ollama-web-search/src/scraping.js
  */
@@ -47,21 +47,32 @@ export async function fetchWebContent(url, retries = 0) {
     const response = await axios.get(url, {
       headers: {
         'User-Agent': getRandomUserAgent(),
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': 1,
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1'
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-language": "zh-CN,zh;q=0.9",
+        "cache-control": "no-cache",
+        "pragma": "no-cache",
+        "priority": "u=0, i",
+        "sec-ch-ua": "\"Not:A-Brand\";v=\"24\", \"Chromium\";v=\"134\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\"",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "cross-site",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
       },
+      "referrer": "https://www.google.com/",
+      "referrerPolicy": "origin",
+      "body": null,
+      "method": "GET",
+      "mode": "cors",
+      "credentials": "include",
       timeout: 60000, // 设置超时时间
       maxRedirects: 5 // 设置最大重定向次数
     });
 
     // 使用 jsdom 创建一个 DOM 环境
-    const dom = new JSDOM(response.data);
+    const dom = new JSDOM(response.data.replace(/<style(\s|>).*?<\/style>/gi, ''));
     const document = dom.window.document;
 
     // 创建 Readability 实例并解析内容
