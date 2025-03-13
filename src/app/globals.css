@@ -1,11 +1,42 @@
 @import "tailwindcss";
 
 :root {
+  /* Light theme */
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #6366f1;
+  /* Indigo-500 */
+  --primary-hover: #4f46e5;
+  /* Indigo-600 */
+  --primary-foreground: #ffffff;
+  --secondary: #a78bfa;
+  /* Violet-400 */
+  --secondary-hover: #8b5cf6;
+  /* Violet-500 */
+  --accent: #c4b5fd;
+  /* Violet-300 */
+  --muted: #f3f4f6;
+  /* Gray-100 */
+  --muted-foreground: #6b7280;
+  /* Gray-500 */
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --card-border: #e5e7eb;
+  /* Gray-200 */
+  --input: #ffffff;
+  --input-border: #d1d5db;
+  /* Gray-300 */
+  --input-focus: #6366f1;
+  /* Indigo-500 */
+  --ring: rgba(99, 102, 241, 0.3);
+  /* Indigo-500 with opacity */
+  --radius: 0.5rem;
+  --header-bg: linear-gradient(135deg, #6366f1, #8b5cf6);
+  /* Indigo to Violet gradient */
 }
 
-@theme inline {
+/* Custom theme variables */
+:root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -14,13 +45,117 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Dark theme */
+    --background: #0f172a;
+    /* Slate-900 */
+    --foreground: #f1f5f9;
+    /* Slate-100 */
+    --primary: #818cf8;
+    /* Indigo-400 */
+    --primary-hover: #6366f1;
+    /* Indigo-500 */
+    --primary-foreground: #ffffff;
+    --secondary: #a78bfa;
+    /* Violet-400 */
+    --secondary-hover: #8b5cf6;
+    /* Violet-500 */
+    --accent: #6d28d9;
+    /* Violet-700 */
+    --muted: #1e293b;
+    /* Slate-800 */
+    --muted-foreground: #94a3b8;
+    /* Slate-400 */
+    --card: #1e293b;
+    /* Slate-800 */
+    --card-foreground: #f1f5f9;
+    /* Slate-100 */
+    --card-border: #334155;
+    /* Slate-700 */
+    --input: #1e293b;
+    /* Slate-800 */
+    --input-border: #475569;
+    /* Slate-600 */
+    --input-focus: #818cf8;
+    /* Indigo-400 */
+    --ring: rgba(129, 140, 248, 0.3);
+    /* Indigo-400 with opacity */
+    --header-bg: linear-gradient(135deg, #6366f1, #7c3aed);
+    /* Indigo to Violet gradient */
   }
 }
 
+/* Global styles */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-hover);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Message bubble styles */
+.message-bubble {
+  border-radius: var(--radius);
+  padding: 1rem;
+  max-width: 80%;
+  animation: fadeIn 0.3s ease-out;
+  transition: transform 0.2s ease;
+}
+
+.message-bubble:hover {
+  transform: translateY(-2px);
+}
+
+.message-bubble li {
+  margin: 10px 0;
 }

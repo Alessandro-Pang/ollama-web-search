@@ -3,25 +3,29 @@
  * @Author: zi.yang
  * @Date: 2025-02-11 17:19:57
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-03-11 17:55:53
- * @Description: 
- * @FilePath: /ollama-web-search/src/chromadb.js
+ * @LastEditTime: 2025-03-13 09:30:00
+ * @Description: ChromaDB 操作相关功能
+ * @FilePath: /ollama-web-search/src/app/server/chromadb.ts
  */
-import { ChromaClient } from 'chromadb';
+import { ChromaClient, Collection } from 'chromadb';
 import { env } from 'chromadb-default-embed';
 
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 
-import { createLogger } from './utils.js';
+import { createLogger } from './utils';
 
 // 配置日志记录
 const logger = createLogger('chromadb');
 
-let chromaInstance = null;
+let chromaInstance: ChromaClient | null = null;
 
-function getChromaClient() {
+/**
+ * 获取 ChromaDB 客户端实例
+ * @returns ChromaDB 客户端实例
+ */
+function getChromaClient(): ChromaClient {
   if (chromaInstance) return chromaInstance;
-  const { HUGGING_FACE_MIRROR, CHROMADB_PATH } = process.env
+  const { HUGGING_FACE_MIRROR, CHROMADB_PATH } = process.env;
   // 修改 hugging face 镜像地址
   if (HUGGING_FACE_MIRROR) {
     env.remoteHost = HUGGING_FACE_MIRROR;
@@ -36,12 +40,12 @@ function getChromaClient() {
 
 /**
  * 创建或加载集合
- * @param {string} collectionName - 集合名称
- * @param {string} [description=''] - 集合描述
- * @returns {Promise<Collection>} - ChromaDB 集合
+ * @param collectionName - 集合名称
+ * @param description - 集合描述
+ * @returns ChromaDB 集合
  */
-export async function getOrCreateCollection(collectionName, description = '') {
-  if (!collectionName) throw new Error('集合名称不能为空')
+export async function getOrCreateCollection(collectionName: string, description = ''): Promise<Collection> {
+  if (!collectionName) throw new Error('集合名称不能为空');
   const chromaClient = getChromaClient();
   try {
     const collection = await chromaClient.getOrCreateCollection({
@@ -53,20 +57,30 @@ export async function getOrCreateCollection(collectionName, description = '') {
     });
     return collection;
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     logger.error(`创建或加载集合 ${collectionName} 失败:`, error);
-    throw new Error(`创建或加载集合 ${collectionName} 失败: ${error.message}`);
+    throw new Error(`创建或加载集合 ${collectionName} 失败: ${errorMessage}`);
   }
+}
+
+/**
+ * 网页数据接口
+ */
+interface WebPageData {
+  link: string;
+  title?: string;
+  content: string;
 }
 
 /**
  * 将结果存储到 Chroma 数据库中
  *
- * @param {Array<Object>} results - 结果数组，每个元素包含 url、title 和 content 属性
- * @param {string} [collectionName='web_pages'] - 集合名称
- * @returns {Promise<void>}
+ * @param results - 结果数组，每个元素包含 link、title 和 content 属性
+ * @param collectionName - 集合名称
+ * @returns Promise<void>
  */
-export async function storeInChroma(results, collectionName = 'web_pages') {
-  results = results.filter(({ link, content }) => link && content)
+export async function storeInChroma(results: WebPageData[], collectionName = 'web_pages'): Promise<void> {
+  results = results.filter(({ link, content }) => link && content);
   if (!Array.isArray(results) || results.length === 0) {
     logger.error('存储数据失败: 结果数组为空');
     throw new Error('存储数据失败: 结果数组为空');
@@ -77,36 +91,48 @@ export async function storeInChroma(results, collectionName = 'web_pages') {
   try {
     await collection.add({
       ids: results.map(({ link }) => link),
-      metadatas: results.map(({ title, link }) => ({ title, link })),
-      documents: results.map(({ content }) => content), // 主要网页内容
+      metadatas: results.map(({ title, link }) => ({ 
+        title: title || '',
+        link 
+      })),
+      documents: results.map(({ content }) => content),
     });
     logger.info(`数据存储到集合 ${collectionName} 成功`);
   } catch (error) {
     logger.error(`数据存储到集合 ${collectionName} 失败:`, error);
-    throw new Error(`数据存储到集合 ${collectionName} 失败: ${error.message}`);
   }
 }
 
 /**
- * 使用 LangChain 进行文本分片并存储到 ChromaDB
- * @param {Array<Object>} webPages - 网页数据数组，每个对象包含 link、title 和 content 属性
- * @param {string} collectionName - 集合名称
+ * 网页数据接口（使用 url 而非 link）
  */
-export async function splitAndStoreInChroma(webPages, collectionName = 'web_pages') {
+interface WebPage {
+  url: string;
+  title?: string;
+  content: string;
+}
+
+/**
+ * 使用 LangChain 进行文本分片并存储到 ChromaDB
+ * @param webPages - 网页数据数组，每个对象包含 url、title 和 content 属性
+ * @param collectionName - 集合名称
+ * @returns Promise<void>
+ */
+export async function splitAndStoreInChroma(webPages: WebPage[], collectionName = 'web_pages'): Promise<void> {
   const textSplitter = new RecursiveCharacterTextSplitter({
     chunkSize: 1500, // 每个分片的最大长度
     chunkOverlap: 250, // 相邻分片的重叠长度
     separators: ['。', '！', '？', '\n', ' ', ''] // 自定义分隔符
   });
 
-  const allSlices = [];
+  const allSlices: WebPageData[] = [];
   for (const page of webPages) {
     const { url, title, content } = page;
     const slices = await textSplitter.splitText(content);
     slices.forEach((slice, index) => {
       allSlices.push({
         link: `${url}-slice-${index}`,
-        title: `${title}-slice-${index}`,
+        title: `${title || ''}-slice-${index}`,
         content: slice
       });
     });
@@ -119,7 +145,7 @@ export async function splitAndStoreInChroma(webPages, collectionName = 'web_page
  * @param {string} collectionName - 集合名称
  * @returns {Promise<void>}
  */
-export async function deleteAllByCollection(collectionName) {
+export async function deleteAllByCollection(collectionName: string) {
   const collection = await getOrCreateCollection(collectionName);
   try {
     const content = await collection.get();
@@ -129,7 +155,6 @@ export async function deleteAllByCollection(collectionName) {
     logger.info(`集合 ${collectionName} 中的所有数据删除成功`);
   } catch (error) {
     logger.error(`删除集合 ${collectionName} 中的数据失败:`, error);
-    throw new Error(`删除集合 ${collectionName} 中的数据失败: ${error.message}`);
   }
 }
 
@@ -138,14 +163,13 @@ export async function deleteAllByCollection(collectionName) {
  * @param {string} collectionName - 集合名称
  * @returns {Promise<Object>} - 集合中的数据
  */
-export async function getAllByCollection(collectionName) {
+export async function getAllByCollection(collectionName: string) {
   const collection = await getOrCreateCollection(collectionName);
   try {
     logger.info(`正在获取集合 ${collectionName} 的数据`);
     return await collection.get();
   } catch (error) {
     logger.error(`获取集合 ${collectionName} 的数据失败:`, error);
-    throw new Error(`获取集合 ${collectionName} 的数据失败: ${error.message}`);
   }
 }
 
@@ -155,7 +179,7 @@ export async function getAllByCollection(collectionName) {
  * @param {string} [collectionName='web_pages'] - 集合名称
  * @returns {Promise<Object>} - 查询结果
  */
-export async function queryCollectionByText(queryTexts, collectionName = 'web_pages') {
+export async function queryCollectionByText(queryTexts: string[], collectionName = 'web_pages') {
   if (!Array.isArray(queryTexts) || queryTexts.length === 0) {
     logger.error('查询数据失败: 查询文本数组为空');
     throw new Error('查询数据失败: 查询文本数组为空');
@@ -167,6 +191,5 @@ export async function queryCollectionByText(queryTexts, collectionName = 'web_pa
     return result;
   } catch (error) {
     logger.error(`查询集合 ${collectionName} 失败:`, error);
-    throw new Error(`查询集合 ${collectionName} 失败: ${error.message}`);
   }
 }

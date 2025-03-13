@@ -1,100 +1,117 @@
-<!--
- * @Author: zi.yang
- * @Date: 2025-02-11 11:54:58
- * @LastEditors: zi.yang
- * @LastEditTime: 2025-02-14 17:58:59
- * @Description: 
- * @FilePath: /ollama-web-search/README.md
--->
+<div align="center">
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1>LLM Web Search</h1>
 
-## Getting Started
+**AI 辅助网络搜索与问答 - 智能、准确、高效**
 
-First, run the development server:
+[![GitHub](https://img.shields.io/github/license/Alessandro-Pang/ollama-web-search)](https://github.com/Alessandro-Pang/ollama-web-search/blob/main/LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+</div>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📝 项目介绍
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+LLM Web Search 是一个结合大语言模型与网络搜索功能的智能问答应用，通过整合 LLM 模型与 Google 搜索功能，实现了高效、准确的网络信息检索与智能回答。项目采用现代化的蓝紫色主题设计，提供了简洁优雅的用户界面，支持 Markdown 渲染，适配深色/浅色模式。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ 特性
 
-## Learn More
+- 🔍 **智能搜索**：结合 SearXNG 搜索 API 获取最新网络信息
+- 🧠 **LLM 支持**：支持多种大语言模型，如 OpenAI、DeepSeek、Ollama 等
+- 🌐 **网页抓取**：智能抓取搜索结果页面内容，提供更全面的信息
+- 💬 **优雅界面**：现代化的蓝紫色主题设计，支持深色/浅色模式
+- ✏️ **Markdown 支持**：回答内容支持 Markdown 格式，提供更好的阅读体验
+- 🔄 **实时反馈**：输入框自动调整大小，提供打字动画和加载状态
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ 技术栈
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **前端**：Next.js 14, TypeScript, React
+- **UI**：自定义 CSS 变量, Markdown-it
+- **AI**：AI SDK, Ollama API
+- **搜索**：SearXNG 搜索 API
+- **数据存储**：ChromaDB (向量数据库)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 快速开始
 
-## Deploy on Vercel
+### 前置要求
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. 安装 [Ollama](https://ollama.com/)： [Ollama 部署本地大模型与使用](https://juejin.cn/post/7457812218509377587)
+2. 安装 [ChromaDB](https://www.trychroma.com/)： [ChromaDB 安装与使用参考文章](https://juejin.cn/post/7480401080742248474)
+3. 安装 [SearXNG](https://searxng.org)： [SearXNG 安装与使用参考文章](https://juejin.cn/post/7480089438899404850)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> 注：如果不是用本地 Ollama 模型，可以不安装 Ollama
 
+### 安装与运行
 
-# ollama-web-search
-
-ollama + Google 搜索，实现 AI 联网回答
-
-## 安装
-
-### 安装 Ollama
-
-参考文章：[Ollama 部署本地大模型与使用](https://juejin.cn/post/7457812218509377587)
-
-安装 Ollama 后， 下载模型，例如：
-
-```bash
-ollama pull deepseek-r1:14b
-```
-
-### 安装 ChromaDB
-
-推荐使用 Docker 安装
-
-```bash
-docker pull chromadb/chroma
-docker run -p 8000:8000 chromadb/chroma
-```
-
-或者使用 Python Pip 安装
-
-```bash
-pip install chromadb
-chroma run --path /db_path
-```
-
-### 安装项目依赖
+1. 克隆项目
 
 ```bash
 git clone https://github.com/Alessandro-Pang/ollama-web-search
 cd ollama-web-search
-pnpm install
 ```
 
-## 使用
-
-### 配置 Google 搜索 API
-
-需要配置 Google 搜索 API，参考文章：[AnythingLLM 接入 Web Search](https://juejin.cn/post/7459341207492935730)
-
-修改 项目的 `.env` 文件，配置 `GOOGLE_SEARCH_ID` 和 `GOOGLE_SEARCH_KEY`
-
-### 运行
+2. 安装依赖
 
 ```bash
-node index.js "问题内容"
+pnpm install
+# 或
+npm install
+# 或
+yarn install
 ```
+
+3. 配置环境变量
+
+创建 `.env.local` 文件并添加以下内容：
+
+```conf
+AI_PROVIDER_TYPE = "AI 类型，目前支持 ollama、deepseek、openai"
+AI_PROVIDER_BASE_URL = "AI 供应商的 API URL"
+AI_PROVIDER_API_KEY = "AI 供应商的 API Key"
+AI_MODEL_NAME = "AI 模型名称"
+
+CHROMADB_PATH = "ChromaDB 的地址"
+SEARXNG_API_URL = "SearXNG API 地址"
+```
+
+4. 启动开发服务器
+
+```bash
+pnpm dev
+# 或
+npm run dev
+# 或
+yarn dev
+```
+
+5. 打开浏览器访问 [http://localhost:3000](http://localhost:3000)
+
+## 📷 界面预览
+
+![LLM Web Search 界面预览](public/preview.png)
+
+## 📚 使用指南
+
+1. 在输入框中输入您的问题
+2. 系统会自动搜索相关网页内容
+3. LLM 模型会分析搜索结果并生成回答
+4. 回答将以 Markdown 格式呈现，支持代码块、列表等格式
+
+## 🤝 贡献
+
+欢迎提交 Issues 和 Pull Requests 来帮助改进项目！
+
+## 📄 许可证
+
+[MIT License](LICENSE)
+
+## 🙏 致谢
+
+- [Next.js](https://nextjs.org/) - React 框架
+- [Ollama](https://ollama.com/) - 本地大语言模型运行工具
+- [ChromaDB](https://www.trychroma.com/) - 开源向量数据库
+- [SearXNG](https://searxng.org) - 网络搜索引擎
+
+---
+
+© 2025 [Alessandro-Pang](https://github.com/Alessandro-Pang)
