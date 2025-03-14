@@ -93,15 +93,16 @@ export default function Chat({ sessionTitle = '新会话' }: ChatProps) {
 
   return (
     <div
-      className='flex flex-col w-full h-full overflow-hidden'
+      className='flex flex-col w-full h-screen overflow-hidden'
       style={{
         backgroundColor: 'var(--card)',
+        position: 'relative',
       }}
     >
       {/* Chat header */}
       <div
         className='p-4 flex items-center justify-between border-b sticky top-0 z-10 bg-card'
-        style={{ borderColor: 'var(--card-border)' }}
+        style={{ borderColor: 'var(--card-border)', height: '64px' }}
       >
         <div className='flex items-center gap-2'>
           <div
@@ -132,11 +133,17 @@ export default function Chat({ sessionTitle = '新会话' }: ChatProps) {
 
       {/* Chat messages */}
       <div
-        className='flex-1 overflow-y-auto p-4 md:p-6 space-y-6'
-        style={{ backgroundColor: 'var(--muted)' }}
+        className='overflow-y-auto p-4 md:p-6'
+        style={{
+          backgroundColor: 'var(--muted)',
+          height: 'calc(100vh - 64px)',
+        }}
       >
         {messages.length === 0 ? (
-          <div className='flex items-center justify-center h-full'>
+          <div
+            className='flex items-center justify-center'
+            style={{ height: 'calc(100% - 130px)' }}
+          >
             <div
               className='max-w-md p-6 rounded-xl animate-fade-in message-bubble'
               style={{
@@ -197,7 +204,10 @@ export default function Chat({ sessionTitle = '新会话' }: ChatProps) {
             </div>
           </div>
         ) : (
-          <div className='space-y-6'>
+          <div
+            className='space-y-6 overflow-auto'
+            style={{ height: 'calc(100% - 130px)' }}
+          >
             {messages.map((message) => {
               const isUser = message.role === 'user';
               return (
@@ -251,88 +261,89 @@ export default function Chat({ sessionTitle = '新会话' }: ChatProps) {
                 </div>
               );
             })}
-          </div>
-        )}
 
-        {/* Error message */}
-        {error && (
-          <div className='flex justify-center animate-fade-in'>
-            <div
-              className='rounded-lg p-4 max-w-[80%]'
-              style={{
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                border: '1px solid rgba(239, 68, 68, 0.2)',
-                color: '#ef4444',
-              }}
-            >
-              <p className='text-sm flex items-center gap-2'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='16'
-                  height='16'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
+            {/* Error message */}
+            {error && (
+              <div className='flex justify-center animate-fade-in'>
+                <div
+                  className='rounded-lg p-4 max-w-[80%]'
+                  style={{
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.2)',
+                    color: '#ef4444',
+                  }}
                 >
-                  <circle cx='12' cy='12' r='10'></circle>
-                  <line x1='12' y1='8' x2='12' y2='12'></line>
-                  <line x1='12' y1='16' x2='12.01' y2='16'></line>
-                </svg>
-                出错了：{error.message || '请稍后再试'}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Loading indicator */}
-        {isLoading && (
-          <div className='flex justify-start animate-fade-in'>
-            <div className='flex items-start gap-3 max-w-[85%]'>
-              <div
-                className='w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center mt-1'
-                style={{ backgroundColor: 'var(--primary)' }}
-              >
-                <IconBrain className='w-5 h-5 text-white' />
-              </div>
-
-              <div
-                className='message-bubble'
-                style={{
-                  backgroundColor: 'var(--card)',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
-                  borderTopLeftRadius: '0',
-                }}
-              >
-                <div className='flex items-center gap-1.5'>
-                  <div
-                    className='w-2 h-2 rounded-full animate-pulse'
-                    style={{ backgroundColor: 'var(--primary)' }}
-                  ></div>
-                  <div
-                    className='w-2 h-2 rounded-full animate-pulse delay-150'
-                    style={{
-                      backgroundColor: 'var(--primary)',
-                      animationDelay: '0.15s',
-                    }}
-                  ></div>
-                  <div
-                    className='w-2 h-2 rounded-full animate-pulse delay-300'
-                    style={{
-                      backgroundColor: 'var(--primary)',
-                      animationDelay: '0.3s',
-                    }}
-                  ></div>
+                  <p className='text-sm flex items-center gap-2'>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      width='16'
+                      height='16'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    >
+                      <circle cx='12' cy='12' r='10'></circle>
+                      <line x1='12' y1='8' x2='12' y2='12'></line>
+                      <line x1='12' y1='16' x2='12.01' y2='16'></line>
+                    </svg>
+                    出错了：{error.message || '请稍后再试'}
+                  </p>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Loading indicator */}
+            {isLoading && (
+              <div className='flex justify-start animate-fade-in'>
+                <div className='flex items-start gap-3 max-w-[85%]'>
+                  <div
+                    className='w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center mt-1'
+                    style={{ backgroundColor: 'var(--primary)' }}
+                  >
+                    <IconBrain className='w-5 h-5 text-white' />
+                  </div>
+
+                  <div
+                    className='message-bubble'
+                    style={{
+                      backgroundColor: 'var(--card)',
+                      border: '1px solid var(--card-border)',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                      borderTopLeftRadius: '0',
+                    }}
+                  >
+                    <div className='flex items-center gap-1.5'>
+                      <div
+                        className='w-2 h-2 rounded-full animate-pulse'
+                        style={{ backgroundColor: 'var(--primary)' }}
+                      ></div>
+                      <div
+                        className='w-2 h-2 rounded-full animate-pulse delay-150'
+                        style={{
+                          backgroundColor: 'var(--primary)',
+                          animationDelay: '0.15s',
+                        }}
+                      ></div>
+                      <div
+                        className='w-2 h-2 rounded-full animate-pulse delay-300'
+                        style={{
+                          backgroundColor: 'var(--primary)',
+                          animationDelay: '0.3s',
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
           </div>
         )}
 
-        <div ref={messagesEndRef} />
 
         {/* Floating input area */}
         <div
