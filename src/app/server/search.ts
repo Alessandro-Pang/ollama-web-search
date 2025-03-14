@@ -15,7 +15,7 @@ const logger = createLogger('search');
 
 // 搜索配置
 const SEARCH_CONFIG = {
-  API_URL: 'http://127.0.0.1:8080/search',
+  API_URL: process.env.SEARXNG_API_URL || 'http://127.0.0.1:8080/search',
   MAX_RESULTS: 10,
   TIMEOUT: 30000 // 30 秒超时
 };

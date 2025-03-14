@@ -27,7 +27,6 @@
     "chromadb": "^1.10.4",
     "chromadb-default-embed": "^2.13.2",
     "cohere-ai": "^7.16.0",
-    "dotenv": "^16.4.7",
     "jsdom": "^26.0.0",
     "lucide-react": "^0.479.0",
     "markdown-it": "^13.0.2",
