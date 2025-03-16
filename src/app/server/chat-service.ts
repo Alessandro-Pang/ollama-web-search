@@ -97,7 +97,7 @@ async function getAllPageContent(items: SearchResult[]): Promise<WebPage[]> {
         const item = items[idx];
         return {
           url: item.url,
-          title: item.title || '',
+          title: item.title ?? '',
           link: item.url,
           content: value as string // 已经通过 Boolean 检查确保不为 null
         };
@@ -113,14 +113,12 @@ async function getAllPageContent(items: SearchResult[]): Promise<WebPage[]> {
  * @param provider - AI提供商
  * @param modelName - 模型名称
  * @param messages - 消息列表
- * @param lastMessage - 最后一条消息内容
  * @returns 回答提示
  */
 export async function processWithWebSearch(
   provider: AIProvider,
   modelName: string,
   messages: Message[],
-  lastMessage: string
 ): Promise<string> {
   // 生成搜索关键词
   const questionPrompt = `请严格基于以下用户提问的核心语义，提炼出3-5个精准的Google搜索关键词。
@@ -139,10 +137,10 @@ export async function processWithWebSearch(
   const {text: searchPrompt} = await generateText({
     model: provider(modelName),
     system: questionPrompt,
-    prompt: lastMessage
+    messages
   })
-  
-  const search = searchPrompt.trim().split('\n').pop() || ''
+
+  const search = searchPrompt.trim().split('\n').pop() ?? ''
   
   // 进行搜索
   const searchResult = await webSearch(search)
@@ -183,8 +181,8 @@ export async function processWithWebSearch(
     metadatas: queryResponse.metadatas,
     distances: queryResponse.distances
   } as unknown as ChromaQueryResult
-  
-  if (!data || !data.documents || !data.documents[0] || data.documents[0].length === 0) {
+
+  if (!data?.documents?.[0] || data.documents[0].length === 0 || data.documents[0].length === 0) {
     throw new Error('未从 ChromaDB 找到相关数据')
   }
   

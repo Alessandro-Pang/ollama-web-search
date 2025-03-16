@@ -2,14 +2,16 @@
  * @Author: zi.yang
  * @Date: 2025-02-12 08:55:01
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-03-13 09:36:00
+ * @LastEditTime: 2025-03-17 07:13:17
  * @Description: 抓取网页内容，提取正文并返回
  * @FilePath: /ollama-web-search/src/app/server/scraping.ts
  */
 
 import axios, { AxiosRequestConfig } from 'axios';
 import { JSDOM } from 'jsdom';
+
 import { Readability } from '@mozilla/readability';
+
 import { createLogger } from './utils';
 
 // 创建日志实例
@@ -85,20 +87,18 @@ export async function fetchWebContent(url: string, retries = 0): Promise<string 
     const article = new Readability(document).parse();
     
     // 返回处理后的文本，移除多余空白
-    return article?.textContent?.replace(/\s+/g, '') || null;
+    return article?.textContent?.replace(/\s+/g, '') ?? null;
   } catch (error) {
     // 错误处理与重试机制
     if (retries < CONFIG.MAX_RETRIES) {
-      const errorMessage = error instanceof Error ? error.message : error;
-      logger.warn(`请求 ${url} 失败，正在进行第 ${retries + 1} 次重试...`, errorMessage);
+      logger.warn(`请求 ${url} 失败，正在进行第 ${retries + 1} 次重试...`, error);
       
       // 等待一段时间后重试
       await new Promise(resolve => setTimeout(resolve, CONFIG.RETRY_DELAY));
       return fetchWebContent(url, retries + 1);
     } else {
       // 超过最大重试次数，记录错误并返回 null
-      const errorMessage = error instanceof Error ? error.message : error;
-      logger.error(`抓取失败: ${url}，已达到最大重试次数`, errorMessage);
+      logger.error(`抓取失败: ${url}，已达到最大重试次数`, error);
       return null;
     }
   }

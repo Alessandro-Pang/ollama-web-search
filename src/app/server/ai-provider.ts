@@ -5,9 +5,10 @@
  * @Description: AI Provider 工厂类
  */
 
+import { createOllama } from 'ollama-ai-provider';
+
 import { createDeepSeek } from '@ai-sdk/deepseek';
 import { createOpenAI, OpenAIProvider } from '@ai-sdk/openai';
-import { createOllama } from 'ollama-ai-provider';
 
 export type AIProvider = OpenAIProvider;
 

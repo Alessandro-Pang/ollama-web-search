@@ -1,7 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { IconX } from './icons'
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import { IconX } from './icons';
 
 interface ModelOption {
   id: string
@@ -87,7 +91,7 @@ const Settings = ({ isOpen, onClose, onSave, initialSettings }: SettingsProps) =
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-[rgba(0,0,0,.5)]  z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div 

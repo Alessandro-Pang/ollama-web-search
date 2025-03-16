@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import './globals.css';
+
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,10 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ollama Web Search | AI-Powered Web Search Assistant",
+  title: "LLM Web Search | AI-Powered Web Search Assistant",
   description: "Powerful AI assistant that searches the web to provide accurate and up-to-date answers to your questions",
   keywords: ["AI", "web search", "ollama", "chatbot", "assistant", "research"],
-  authors: [{ name: "Ollama Web Search Team" }],
+  authors: [{ name: "Alessandro-Pang" }],
   viewport: "width=device-width, initial-scale=1",
   themeColor: "#6366f1",
 };

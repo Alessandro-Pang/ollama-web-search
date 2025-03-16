@@ -344,7 +344,6 @@ export default function Chat({ sessionTitle = '新会话' }: ChatProps) {
           </div>
         )}
 
-
         {/* Floating input area */}
         <div
           className='bottom-8 transform z-20 w-full max-w-2xl mx-auto my-0'
@@ -374,15 +373,12 @@ export default function Chat({ sessionTitle = '新会话' }: ChatProps) {
                   }}
                   disabled={isLoading}
                 />
-                <div className='absolute right-2 bottom-2 flex items-center space-x-2'>
+                <div className='absolute right-2 bottom-3 flex items-center space-x-2'>
                   <button
                     type='button'
                     onClick={() => setUseWebSearch(!useWebSearch)}
-                    className={`p-1.5 rounded-md transition-colors ${
-                      useWebSearch
-                        ? 'bg-primary text-white'
-                        : 'text-muted-foreground hover:bg-muted'
-                    }`}
+                    className={`p-1.5 rounded-md transition-colors cursor-pointer`}
+                    style={{color: useWebSearch? 'var(--primary)' : 'var(--foreground)',}}
                     title={useWebSearch ? '已启用联网搜索' : '点击启用联网搜索'}
                   >
                     <IconGlobe className='w-4 h-4' />
@@ -390,7 +386,7 @@ export default function Chat({ sessionTitle = '新会话' }: ChatProps) {
                   <button
                     type='submit'
                     disabled={isLoading || !input.trim()}
-                    className='p-1.5 rounded-md transition-colors'
+                    className='p-1.5 rounded-md transition-colors cursor-pointer'
                     style={{
                       backgroundColor: input.trim()
                         ? 'var(--primary)'

@@ -4,8 +4,13 @@
  * @LastEditors: zi.yang
  * @Description: Chat API 路由
  */
-import { streamText } from 'ai'
-import { createAIProvider, processWithWebSearch, processWithoutWebSearch } from '../../server/chat-service'
+import { streamText } from 'ai';
+
+import {
+  createAIProvider,
+  processWithoutWebSearch,
+  processWithWebSearch,
+} from '../../server/chat-service';
 
 interface ChatRequest {
   messages: Message[]
@@ -21,12 +26,7 @@ interface Message {
 export async function POST(req: Request) {
   try {
     const { messages, useWebSearch = true } = await req.json() as ChatRequest
-    const lastMessage = messages.at(-1)?.content
 
-    if (!lastMessage) {
-      throw new Error('No message content provided')
-    }
-    
     // 创建 AI Provider
     const provider = createAIProvider()
     const modelName = process.env.AI_MODEL_NAME as string
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     
     if (useWebSearch) {
       // 使用联网搜索处理聊天
-      answerPrompt = await processWithWebSearch(provider, modelName, messages, lastMessage)
+      answerPrompt = await processWithWebSearch(provider, modelName, messages)
     } else {
       // 不使用联网搜索，直接使用模型回答
       answerPrompt = processWithoutWebSearch()
