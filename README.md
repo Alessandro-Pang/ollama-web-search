@@ -90,6 +90,9 @@ yarn dev
 
 ## 📷 界面预览
 
+> **注意：**
+> 当前项目仍在开发中，界面中的内容并未完全实现，尽请谅解
+
 ![LLM Web Search 界面预览](public/preview.png)
 
 ## 📚 使用指南
